@@ -15,8 +15,13 @@ import carom
 df_carom = pd.read_csv("caromDataset.csv")
 
 # make training (~500 samples) and test (~100 samples) datasets 
-df_train = df_carom.groupby("Target").sample(n=167, random_state=1).reset_index(drop=True)
-df_test = df_carom.groupby("Target").sample(n=33, random_state=2).reset_index(drop=True)
+# df_train = df_carom.groupby("Target").sample(n=167, random_state=1).reset_index(drop=True)
+# df_test = df_carom.groupby("Target").sample(n=33, random_state=2).reset_index(drop=True)
+
+df_train = df_carom.groupby("Target").sample(n=167, random_state=1)
+df_test = df_carom.drop(df_train.index.to_list()).groupby("Target").sample(n=33, random_state=2).reset_index(drop=True)
+df_train.reset_index(drop=True)
+
 
 
 feature_names = df_train.columns[3:16]

@@ -1,21 +1,24 @@
+from typing import Union
 import pandas as pd
 import os
 import time
-print(os.getcwd())
-df_carom = pd.read_csv("caromDataset.csv")
+import urllib
 
-# make training (~500 samples) and test (~100 samples) datasets 
-df_train = df_carom.groupby("Target").sample(n=167, random_state=1)
+def split_train_test(filename: str=None, size=0.8, random_state:int=int(time.time())):
+    """Split the training dataset and the testing dataset
 
-print(df_train.index.to_list())
-print(df_carom.shape)
-print(df_train.shape)
-df_carom.drop(df_train.index.to_list()).groupby("Target").sample(n=33, random_state=2)
-print(len(df_train["Target"].unique()))
+    Args:
+        filename (str, optional): the dataset. The dataset is a csv file and must include Target column. Defaults to the dataset in the paper https://github.com/KardelUM/Carom/raw/master/caromDataset.csv.
+        size (float/tuple, optional): The size for training dataset and testing dataset. 
+                                    When size is a 2 elements tuple, training dataset size is the fist element and the testing dataset siz eis the second element
+                                    When size is a float, it means the fraction for training dataset.
+        random_state (int, optional): random state. Defaults to the seconds since the epoch, in UTC.
 
-def split_train_test(filename=None, size=0.8, random_state:int=int(time.time())):
+    Returns:
+        (pd.DataFrame, pd.DataFrame): Training dataset and testing dataset.
+    """
     if filename is None:
-        
+        filename="https://github.com/KardelUM/Carom/raw/master/caromDataset.csv"
     df = pd.read_csv(filename)
     Ntarget =  len(df["Target"].unique())
     if isinstance(size, tuple):
